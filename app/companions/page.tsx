@@ -1,4 +1,3 @@
-
 import { authGuard } from "@/lib/auth";
 
 export default async function CompanionsPage() {
