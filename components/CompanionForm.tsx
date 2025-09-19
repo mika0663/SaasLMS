@@ -3,8 +3,9 @@
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-
 import { Button } from "@/components/ui/button"
+import { redirect } from "next/navigation"
+import { createCompanion } from "@/lib/actions/companion.actions"
 import {
     Form,
     FormControl,
@@ -18,9 +19,7 @@ import { Input } from "@/components/ui/input"
 import {
     Select,
     SelectContent,
-    SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
@@ -54,9 +53,17 @@ const CompanionForm = () => {
     })
 
     // 2. Define a submit handler.
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
 
-        console.log(values)
+       const companion = await createCompanion(values);
+       if(companion){
+        redirect(`/companions/${companion.id}`);
+
+       }
+       else{
+        console.log('Failed to create a companion');
+        redirect('/');
+       }
     }
 
 
