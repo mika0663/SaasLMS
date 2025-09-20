@@ -37,66 +37,68 @@ Converso - SaasLMS is a modern, real-time AI teaching platform built with Next.j
 - Mobile-first approach
 - Dark/light mode support
 
+
+## What's new / Important changes
+
+- Clerk authentication: the sign-in page is implemented as a catch-all route at `app/sign-in/[[...sign-in]]/page.tsx` to satisfy Clerk's requirements for the `SignIn` component.
+- Middleware: `middleware.ts` now uses Clerk's server middleware and explicitly allows public routes (e.g., `/`, `/sign-in(.*)` and webhook endpoints). This prevents protected middleware from blocking authentication pages.
+- Client-side search & filters: `components/SearchInput.tsx` and `components/SubjectFilters.tsx` update the URL query parameters (topic & subject) and push navigation using `next/navigation`'s `router.push(..., { scroll: false })`. Both components initialize their local state from `useSearchParams()` so the UI stays in sync with the URL.
+- Companion routing fix: `components/CompanionCard.tsx` links to `/companions/[id]` (dynamic route). Ensure `app/companions/[id]/page.tsx` exists to render companion sessions.
+
 ---
 
-## 🚀 Getting Started
+## Quick Start
 
-Follow these steps to get started:
-
-1. **Install dependencies:**
+1. Install dependencies:
 
 ```bash
 npm install
 ```
 
-1. **Set up environment variables:**
+2. Add environment variables (create `.env.local`):
 
 ```bash
-# .env.local
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_key
-CLERK_SECRET_KEY=your_secret
+# Clerk
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret
+
+# Add any other keys your app depends on (Stripe, etc.)
 ```
 
-1. **Run the development server:**
+3. Run the dev server:
 
 ```bash
 npm run dev
 ```
 
-1. **Access the application:**
-
-Open [http://localhost:3000](http://localhost:3000) in your browser to view the app.
+Open `http://localhost:3000`.
 
 ---
 
-## 📁 Project Structure
+## Key Files & Behavior
 
-```plaintext
-saaslms/
-├── app/                   # Next.js App Router pages
-│   ├── companions/        # AI companions features
-│   │   ├── new/          # Companion creation form
-│   │   ├── [id]/         # Individual companion view
-│   │   └── page.tsx      # Companions gallery
-│   ├── my-journey/       # Learning progress
-│   ├── sign-in/          # Authentication
-│   ├── subscription/     # Pricing plans
-│   ├── layout.tsx        # Root layout with auth
-│   └── page.tsx          # Landing page
-├── components/           # Reusable components
-│   ├── ui/              # Shadcn UI components
-│   └── ...              # Custom components
-├── constants/           # Static data & configs
-├── lib/                # Utility functions
-├── public/             # Static assets
-│   ├── icons/         # UI icons
-│   └── images/        # Content images
-├── types/             # TypeScript definitions
-└── ...               # Config files
+- `app/sign-in/[[...sign-in]]/page.tsx` — Clerk `SignIn` mounted in a catch-all route. This prevents routing errors Clerk warns about when the component is mounted in a non-catch-all.
+- `middleware.ts` — Uses Clerk server middleware; `publicRoutes` allow access to sign-in and webhook endpoints. The matcher is configured to avoid Next static assets.
+- `components/SearchInput.tsx` — Client component that:
+  - Reads `topic` from URL via `useSearchParams()`
+  - Keeps local input state in sync with URL
+  - Pushes URL updates with a debounce (so typing doesn't flood history)
+  - Removes the `topic` query param when the input is cleared
+- `components/SubjectFilters.tsx` — Similar behavior for `subject` query key; updates the URL when selection changes. Uses `Select` from local UI primitives.
+- `components/CompanionCard.tsx` — Links to `/companions/${id}`; ensure dynamic page exists to avoid 404s.
+- `app/companions/page.tsx` — Server component that:
+  - Uses `authGuard()` (server-side) to protect the route
+  - Reads `searchParams` for `subject` and `topic` and calls `getAllCompanions({ subject, topic })` to fetch filtered results
 
 ---
 
-## 🌐 Routes & Features
+## Routing and Auth Notes
+
+- The app uses Clerk for auth; server-side `authGuard()` redirects unauthenticated users to `/sign-in`.
+- The sign-in route is public and mounted at a catch-all to support Clerk's `SignIn` component.
+- Middleware excludes `_next/static`/images and `favicon.ico` from matching so static assets aren't processed by the middleware.
+
+
 
 | Route | Description | Access | Components |
 |-------|-------------|---------|------------|
@@ -152,25 +154,29 @@ saaslms/
   - Payment processing
   - Plan management
 
+
+## Dev Notes and Troubleshooting
+
+- If clicking a companion's `Launch Lesson` results in 404, confirm `app/companions/[id]/page.tsx` exists and the Link is `href={`/companions/${id}`}`.
+- If Clerk SignIn throws errors about routing, confirm the catch-all `[[...sign-in]]` route exists and middleware allows `/sign-in(.*)`.
+- If client-side filtering/searching doesn't refresh results:
+  - Ensure `app/companions/page.tsx` reads `searchParams` and forwards `subject` and `topic` into the data fetch used by the Server Component. Example:
+
+```ts
+const subject = searchParams.subject || '';
+const topic = searchParams.topic || '';
+const companions = await getAllCompanions({ subject, topic });
+```
+
+- Tailwind: if styling on UI primitives isn't applied, confirm `tailwind.config.js` includes `app/**/*` and `components/**/*` in `content`.
+
 ---
 
-## ⚙️ Configuration & Environment
+## Scripts
 
-- **Next.js**: Configured via `next.config.ts` (default settings, can be extended)
-- **TypeScript**: Strict mode, path aliases (`@/*`)
-- **Tailwind CSS**: Custom theme in `app/globals.css`, config in `postcss.config.mjs`
-- **ESLint**: Next.js and TypeScript rules in `eslint.config.mjs`
-- **Fonts**: Google Fonts (`Bricolage Grotesque`)
-- **Component Library**: Radix UI, custom UI components
-
----
-
-## 📦 Scripts
-
-- `npm run dev` – Start development server
-- `npm run build` – Build for production
-- `npm run start` – Start production server
-- `npm run lint` – Run ESLint
+- `npm run dev` — run dev server
+- `npm run build` — build production
+- `npm run start` — start built app
 
 ---
 
@@ -206,19 +212,17 @@ saaslms/
 - Prettier
 - TypeScript strict mode
 
+## Next Steps / Suggestions
+
+- Add server-side tests for protected routes and middleware behavior.
+- Add unit tests for `SearchInput` and `SubjectFilters` to validate URL sync behavior.
+- Add e2e tests for the sign-in flow and companion session navigation.
+
 ---
 
-## 📄 License
+## License
 
 MIT
+  - Social sign-in options
 
----
-
-## 📚 Resources
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Clerk Documentation](https://clerk.com/docs)
-- [Tailwind CSS](https://tailwindcss.com/docs)
-- [Shadcn UI](https://ui.shadcn.com)
-- [React Hook Form](https://react-hook-form.com)
-
+  - Secure authentication
