@@ -32,14 +32,18 @@ const CompanionSession = async ({ params }: CompanionsSessionPageProps) => {
           style={{ backgroundColor: getSubjectColor(subject) }}>
               <Image src={`/icons/${subject}.svg`} alt={subject} width={35} height={35}></Image>
         </div>
+        <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
           <p className="font-bold text-2xl">
             {subject}
           </p>
-          <div className="subject-badge max-sm:hidden">{subject}</div>
+          <div className="subject-badge max-sm:hidden">{subject}
+          </div>
         </div>
-        <p className="text-lg">{subject}</p>
+        <p className="text-lg">{topic}</p>
+        </div>
       </div>
+      <div className="items-start text2xl max-md:hidden"> {duration} minutes</div>
     </article>
     </main>
   )
