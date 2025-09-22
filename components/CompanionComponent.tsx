@@ -56,7 +56,7 @@ const CompanionComponent = ({ companionId, name, subject, topic, style, voice, u
                             <Image src={`/icons/${subject}.svg`} alt={subject} width={150} height={150} className="max-sm:w-fit" />
 
                         </div>
-                        <div className={cn('absolute transition-opacity duration-1000', callStatus === callStatus.ACTIVE ? 'opacity-100' : 'opacity-0')}></div>
+                        <div className={cn('absolute transition-opacity duration-1000', callStatus === CallStatus.ACTIVE ? 'opacity-100' : 'opacity-0')}></div>
                     </div>
                 </div>
             </section>
