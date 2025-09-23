@@ -61,9 +61,18 @@ const CompanionComponent = ({ companionId, name, subject, topic, style, voice, u
         setIsMuted(!isMuted);
     }
 
-    const handleCall = () =>
-    {}
-    const handleDisconnect = ( ) => {
+    const handleCall = () => { 
+        setCallStatus(CallStatus.CONNECTING)
+    const assistantOverrides = {
+        varibaleValues: {
+            subject, topic , style 
+        },
+        clientMessages: ['transcript'],
+        serverMessages: [],
+    }
+    vapi.start()
+    }
+    const handleDisconnect = () => {
 
     }
 
@@ -99,12 +108,17 @@ const CompanionComponent = ({ companionId, name, subject, topic, style, voice, u
                     </button>
                     <button className={cn('rounded-lg py-2 cursor-pointer transition-colors w-full text-white',
                         callStatus === CallStatus.ACTIVE ? 'bg-red-700 ' : 'bg-primary',
-                        CallStatus === CallStatus.CONNECTING && 'animate-pulse')} onClick={callStatus === CallStatus.ACTIVE ? handleDisconnect : handleCall}
+                        callStatus === CallStatus.CONNECTING && 'animate-pulse')} onClick={callStatus === CallStatus.ACTIVE ? handleDisconnect : handleCall}
                     >
                         {callStatus === CallStatus.ACTIVE ? "End Session" : callStatus === CallStatus.CONNECTING ? 'Connecting' : 'Start Session'}
 
                     </button>
                 </div>
+            </section>
+            <section className="transcript">
+                        <div className="transcript-message no-scrollbar">MESSAGES</div>
+                        <div className="transcript-fade" />
+
 
             </section>
         </section>
