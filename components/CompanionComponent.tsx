@@ -3,7 +3,7 @@
 
 
 import React, { useRef } from "react"
-import { cn, getSubjectColor } from "@/lib/utils"
+import { cn, configureAssistant, getSubjectColor } from "@/lib/utils"
 import { useState, useEffect } from "react"
 import { vapi } from "@/lib/vapi.sdk"
 import Image from "next/image"
@@ -45,6 +45,14 @@ const CompanionComponent = ({ companionId, name, subject, topic, style, voice, u
 
 
 
+            // ADD listeners
+    vapi.on('call-start', onCallStart);
+    vapi.on('call-end', onCallEnd);
+    vapi.on('message', onMessage);
+    vapi.on('error', onError);
+    vapi.on('speech-start', onSpeechStart);
+    vapi.on('speech-end', onSpeechEnd);
+
         return () => {
             vapi.on('call-start', onCallStart);
             vapi.on('call-end', onCallEnd);
@@ -70,10 +78,13 @@ const CompanionComponent = ({ companionId, name, subject, topic, style, voice, u
         clientMessages: ['transcript'],
         serverMessages: [],
     }
-    vapi.start()
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-expect-error
+    vapi.start(configureAssistant(voice,style),assistantOverrides)
     }
     const handleDisconnect = () => {
-
+         setCallStatus(CallStatus.FINISHED)
+         vapi.stop();
     }
 
     return (
