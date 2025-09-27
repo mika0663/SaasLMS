@@ -71,14 +71,13 @@ const CompanionComponent = ({ companionId, name, subject, topic, style, voice, u
 
     const handleCall = () => { 
         setCallStatus(CallStatus.CONNECTING)
+
     const assistantOverrides = {
-        varibaleValues: {
-            subject, topic , style 
-        },
+        variableValues: { subject, topic , style },
         clientMessages: ['transcript'],
         serverMessages: [],
     }
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
     //@ts-expect-error
     vapi.start(configureAssistant(voice,style),assistantOverrides)
     }
