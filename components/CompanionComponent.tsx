@@ -45,13 +45,6 @@ const CompanionComponent = ({ companionId, name, subject, topic, style, voice, u
 
 
 
-            // ADD listeners
-    vapi.on('call-start', onCallStart);
-    vapi.on('call-end', onCallEnd);
-    vapi.on('message', onMessage);
-    vapi.on('error', onError);
-    vapi.on('speech-start', onSpeechStart);
-    vapi.on('speech-end', onSpeechEnd);
 
         return () => {
             vapi.on('call-start', onCallStart);

@@ -36,7 +36,7 @@ export const configureAssistant = (voice: string, style: string) => {
     },
     model: {
       provider: "openai",
-      model: "gpt-4",
+      model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
