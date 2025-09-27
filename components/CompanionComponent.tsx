@@ -122,10 +122,14 @@ const CompanionComponent = ({ companionId, name, subject, topic, style, voice, u
                             height={130} className="rounded-lg" />
                         <p className="font-bold text-2xl">{userName}</p>
                     </div>
-                    <button className="btn-mic" onClick={toggleMicrophone}>
+
+                    <button className="btn-mic" onClick={toggleMicrophone} >
+
                         <Image src={isMuted ? '/icons/mic-off.svg' : '/icons/mic-on.svg'} alt='mic' width={36} height={36} />
-                        <p className="max-sm:hidden">{isMuted ? 'Turn on Microphone' : 'Turn off Microphone'}</p>
+                        
+                        <p className="max-sm:hidden" >{isMuted ? 'Turn on Microphone' : 'Turn off Microphone'}</p>
                     </button>
+
                     <button className={cn('rounded-lg py-2 cursor-pointer transition-colors w-full text-white',
                         callStatus === CallStatus.ACTIVE ? 'bg-red-700 ' : 'bg-primary',
                         callStatus === CallStatus.CONNECTING && 'animate-pulse')} onClick={callStatus === CallStatus.ACTIVE ? handleDisconnect : handleCall}
@@ -137,19 +141,19 @@ const CompanionComponent = ({ companionId, name, subject, topic, style, voice, u
             </section>
             <section className="transcript">
                 <div className="transcript-message no-scrollbar">
-                    {messages.map((message) => {
+                    {messages.map((message,index) => {
                         if (message.role === 'assistant') {
                             return (
-                                <p key={message.content} className="max-sm:text-sm">
+                                <p key={index} className="max-sm:text-sm">
                                     {name
                                         .split(' ')[0]
-                                        .replace(/[.,]/g, '')
+                                        .replace('/[.,]/g, ', '')
                                     }: {message.content}
                                 </p>
                             )
                         } else {
                             return (
-                                <p key={message.content} className="text-primary max-sm:text-sm">
+                                <p key={index} className="text-primary max-sm:text-sm">
                                     {userName}: {message.content}
                                 </p>
                             )
@@ -157,8 +161,6 @@ const CompanionComponent = ({ companionId, name, subject, topic, style, voice, u
                     })}
                 </div>
                 <div className="transcript-fade" />
-
-
             </section>
         </section>
     )
