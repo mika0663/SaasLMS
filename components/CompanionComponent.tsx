@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-'use client'
+"use client"
 
 import React, { useRef } from "react"
 import { cn, configureAssistant, getSubjectColor } from "@/lib/utils"
@@ -73,10 +73,22 @@ const CompanionComponent = ({ companionId, name, subject, topic, style, voice, u
     }, []);
 
     const toggleMicrophone = () => {
-        const isMuted = vapi.isMuted;
-        vapi.setMuted(!isMuted);
-        setIsMuted(!isMuted);
-    }
+        setIsMuted((prev) => {
+            const newMuted = !prev;
+            try {
+                if (callStatus === CallStatus.ACTIVE) {
+                    vapi.setMuted(newMuted);
+                } else {
+                    console.warn("No active call yet. Only toggling UI.");
+                }
+            } catch (err) {
+                console.error("Failed to toggle microphone:", err);
+            }
+            return newMuted;
+        });
+    };
+
+
 
     const handleCall = () => {
         setCallStatus(CallStatus.CONNECTING)
@@ -87,6 +99,7 @@ const CompanionComponent = ({ companionId, name, subject, topic, style, voice, u
             serverMessages: [],
         }
 
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-expect-error
         vapi.start(configureAssistant(voice, style), assistantOverrides)
     }
@@ -123,10 +136,8 @@ const CompanionComponent = ({ companionId, name, subject, topic, style, voice, u
                         <p className="font-bold text-2xl">{userName}</p>
                     </div>
 
-                    <button className="btn-mic" onClick={toggleMicrophone} >
-
+                    <button className="btn-mic" onClick={toggleMicrophone} disabled={callStatus !== CallStatus.ACTIVE}>
                         <Image src={isMuted ? '/icons/mic-off.svg' : '/icons/mic-on.svg'} alt='mic' width={36} height={36} />
-                        
                         <p className="max-sm:hidden" >{isMuted ? 'Turn on Microphone' : 'Turn off Microphone'}</p>
                     </button>
 
@@ -141,7 +152,7 @@ const CompanionComponent = ({ companionId, name, subject, topic, style, voice, u
             </section>
             <section className="transcript">
                 <div className="transcript-message no-scrollbar">
-                    {messages.map((message,index) => {
+                    {messages.map((message, index) => {
                         if (message.role === 'assistant') {
                             return (
                                 <p key={index} className="max-sm:text-sm">
