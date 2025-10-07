@@ -38,7 +38,7 @@ const CompanionSession = async ({ params }: CompanionsSessionPageProps) => {
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <p className="font-bold text-2xl">
-                {subject}
+                {name}
               </p>
               <div className="subject-badge max-sm:hidden">{subject}
               </div>
