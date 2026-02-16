@@ -38,8 +38,10 @@ const formSchema = z.object({
 
 
 
+type CompanionFormValues = z.input<typeof formSchema>;
+
 const CompanionForm = () => {
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm<CompanionFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: '',
@@ -52,9 +54,10 @@ const CompanionForm = () => {
     })
 
     // 2. Define a submit handler.
-    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const onSubmit = async (values: CompanionFormValues) => {
+       const parsedValues = formSchema.parse(values);
 
-       const companion = await createCompanion(values);
+       const companion = await createCompanion(parsedValues);
        if(companion){
         redirect(`/companions/${companion.id}`);
 
