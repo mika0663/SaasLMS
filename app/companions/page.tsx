@@ -18,7 +18,7 @@ export default async function CompanionsPage({ searchParams }: SearchParams) {
 
   return (
     <main>
-      <section className="felx justify-between gap-4 max-sm:flex-col">
+      <section className="flex justify-between gap-4 max-sm:flex-col">
 
         <h1>Companion Library</h1>
         <div className=" flex gap-4 justify-end"> 

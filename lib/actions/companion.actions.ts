@@ -45,7 +45,6 @@ export const getAllCompanions = async ({
 export const getComapnion = async (id: string) => {
   const supabase = createSupabaseClient();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data, error } = await supabase
     .from("companions")
     .select()

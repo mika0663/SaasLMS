@@ -9,7 +9,6 @@ import { createCompanion } from "@/lib/actions/companion.actions"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import React, { useRef } from "react"
@@ -53,7 +52,6 @@ const CompanionComponent = ({ companionId, name, subject, topic, style, voice, u
                 setMessages((prev) => [newMessage, ...prev]);
             }
         }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const onSpeechStart = () => setIsSpeaking(true);
         const onSpeechEnd = () => setIsSpeaking(false);
         const onError = (error: Error) => console.log('Error', error);
@@ -74,7 +72,7 @@ const CompanionComponent = ({ companionId, name, subject, topic, style, voice, u
             vapi.off('speech-start', onSpeechStart);
             vapi.off('speech-end', onSpeechEnd);
         }
-    }, []);
+    }, [companionId]);
 
     const toggleMicrophone = () => {
         setIsMuted((prev) => {

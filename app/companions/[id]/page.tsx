@@ -16,11 +16,9 @@ interface CompanionsSessionPageProps {
 const CompanionSession = async ({ params }: CompanionsSessionPageProps) => {
 
   const { id } = await params;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const companion = await getComapnion(id);
   const user = await currentUser();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { name, subject, title, topic, duration } = companion;
+  const { name, subject, topic, duration } = companion;
   if (!user) redirect('/sign-in');
   if (!name) redirect('/componions')
 
